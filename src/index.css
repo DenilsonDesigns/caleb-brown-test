@@ -1,13 +1,48 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+.navbar-main {
+  font-size: large;
+  margin-right: 1%;
+}
+
+.navbar-secondary {
+  margin-right: 1%;
+}
+
+a:link {
+  text-decoration: none;
+  color: white;
+}
+
+a:visited {
+  text-decoration: none;
+}
+
+.coin-detail-desc {
+  background-color: rgb(162, 178, 180);
+  color: black;
+  /* margin: 1% 1%;*/
+  padding: 1% 1%;
+  border-radius: 2%;
+}
+
+.error-div {
+  background-color: rgb(236, 160, 160);
+  color: red;
+}
+
+.coin-title {
+  text-transform: capitalize;
 }

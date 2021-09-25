@@ -1,8 +1,6 @@
 import { Button } from "reactstrap";
 
-// @TODO: interface for props.
-const TablePagin = (props: any) => {
-  // 57: 5.7, 6 buttons
+const TablePagin = (props: TablePaginProps) => {
   const numButtons = Math.ceil(props.coinList.length / 10);
 
   const buildButtons = (num: number, curr: number) => {
@@ -13,7 +11,7 @@ const TablePagin = (props: any) => {
         <Button
           onClick={() => props.onClick(i)}
           outline={i === curr ? false : true}
-          color="info"
+          className=".bg-light"
           key={i}
           style={{ margin: "0px 4px" }}
         >

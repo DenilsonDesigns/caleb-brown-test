@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import { gexios } from "../../util/gexios";
 import {
   Table,
   InputGroup,
@@ -7,55 +7,50 @@ import {
   InputGroupAddon,
   Input,
   Col,
+  Row,
 } from "reactstrap";
-import MainViewRow from "./MainViewRow/MainViewRow";
 import TablePagin from "./TablePagin/TablePagin";
-
-// @TODO: Export this to vars file.
-const MAIN_VIEW_KV_PAIRS = {
-  "#": "market_cap_rank",
-  Name: "name",
-  Price: "current_price",
-  "24h %": "price_change_percentage_24h",
-  "Market Cap": "market_cap",
-  "Circulating Supply": "circulating_supply",
-  "Max Supply": "max_supply",
-  "Supply %": "circ_supply_percent", // not supplied by api, need to calc.
-};
+import { ClipLoader } from "react-spinners";
+import CryptoTableRow from "../UI/CryptoTableRow/CryptoTableRow";
+import { FiSearch } from "react-icons/fi";
+import { MAIN_VIEW_KV_PAIRS } from "../../util/globalVars";
 
 const MainView = (): JSX.Element => {
-  // {/* @TODO: create interface for `coin` any `coinsOnPage` */}
-  // @TODO: proper types for state containers.
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const [coins, setCoins] = useState<MainViewCoin[]>([] as MainViewCoin[]);
+  const [filteredCoins, setFilteredCoins] = useState<MainViewCoin[]>(
+    [] as MainViewCoin[]
+  );
+  const [coinsOnPage, setCoinsOnPage] = useState<MainViewCoin[]>(
+    [] as MainViewCoin[]
+  );
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [searchValue, setSearchValue] = useState<string>("");
 
-  const [coins, setCoins] = useState<any>([]);
-  const [filteredCoins, setFilteredCoins] = useState<any>([]);
-  const [coinsOnPage, setCoinsOnPage] = useState<any>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchValue, setSearchValue] = useState("");
-
-  useEffect(() => {
-    // @TODO: configure axios to use base url from coingecko.
-    // use a cool name like "coinGexios";
-    axios
-      .get("https://api.coingecko.com/api/v3/coins/markets", {
+  useEffect((): void => {
+    setLoading(true);
+    gexios
+      .get("/coins/markets", {
         params: { vs_currency: "usd" },
       })
-      .then((res) => {
-        console.log(res.data);
-        // @TODO: need to sort by ranking desc, for some reason coingecko doesnt give
-        // in totally correct order.
+      .then((res: { data: MainViewCoin[] }) => {
         setCoins(res.data);
         setFilteredCoins(res.data);
+        setLoading(false);
+      })
+      .catch((e: string) => {
+        console.log(e);
+        setError(JSON.stringify(e));
+        setLoading(false);
       });
-    return () => {};
   }, []);
 
-  useEffect(() => {
+  useEffect((): void => {
     setCoinsOnPage(filterCoinsByPageNum(filteredCoins, currentPage));
   }, [filteredCoins, currentPage]);
 
-  useEffect(() => {
-    // set filteredcoins by filtering coins on the value.
+  useEffect((): void => {
     if (searchValue.length > 1) {
       setFilteredCoins(
         coins.filter(
@@ -68,13 +63,16 @@ const MainView = (): JSX.Element => {
     if (searchValue.length === 0) setFilteredCoins(coins);
   }, [searchValue, coins]);
 
-  const paginClick = (pageNum: number) => {
+  const paginClick = (pageNum: number): void => {
     setCurrentPage(pageNum);
   };
 
-  const filterCoinsByPageNum = (coinList: object[], pageNum: number) => {
-    let upperLimit = pageNum * 10 - 1; //9, 9
-    let lowerLimit = pageNum * 10 - 10; // 0, 10
+  const filterCoinsByPageNum = (
+    coinList: MainViewCoin[],
+    pageNum: number
+  ): MainViewCoin[] => {
+    let upperLimit = pageNum * 10 - 1;
+    let lowerLimit = pageNum * 10 - 10;
     return coinList.filter(
       (_: object, i: number) => i >= lowerLimit && i <= upperLimit
     );
@@ -82,39 +80,55 @@ const MainView = (): JSX.Element => {
 
   return (
     <div>
-      <h4>Cryptocurreny Dashboard</h4>
-      <Col md={3}>
-        {/* @TODO: add magnifying glass icon. */}
-        <InputGroup>
-          <InputGroupAddon addonType="prepend">
-            <InputGroupText>To the Left!</InputGroupText>
-          </InputGroupAddon>
-          <Input
-            placeholder={"Type to search..."}
-            onChange={(e) => setSearchValue(e.target.value.toLowerCase())}
-            value={searchValue}
+      <Row style={{ marginBottom: "1%", marginTop: "1%" }}>
+        <Col md={3}>
+          <h4>Cryptocurrency Dashboard</h4>
+        </Col>
+        <Col md={3}>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>
+                <FiSearch size={"1.42em"} />
+              </InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder={"Type to search..."}
+              onChange={(e) => setSearchValue(e.target.value.toLowerCase())}
+              value={searchValue}
+            />
+          </InputGroup>
+        </Col>
+      </Row>
+      {loading ? (
+        <ClipLoader />
+      ) : error ? (
+        <p className="error-div">
+          Something went wrong! <br />
+          {error}
+        </p>
+      ) : (
+        <>
+          <Table className=".bg-light" hover bordered>
+            <thead>
+              <tr>
+                {Object.keys(MAIN_VIEW_KV_PAIRS).map((keyVal, i) => {
+                  return <th key={i}>{keyVal}</th>;
+                })}
+              </tr>
+            </thead>
+            <tbody>
+              {coinsOnPage.map((coin: any) => {
+                return <CryptoTableRow key={coin.name} coin={coin} />;
+              })}
+            </tbody>
+          </Table>
+          <TablePagin
+            coinList={coins}
+            currentPage={currentPage}
+            onClick={paginClick}
           />
-        </InputGroup>
-      </Col>
-      <Table dark>
-        <thead>
-          <tr>
-            {Object.keys(MAIN_VIEW_KV_PAIRS).map((keyVal, i) => {
-              return <th key={i}>{keyVal}</th>;
-            })}
-          </tr>
-        </thead>
-        <tbody>
-          {coinsOnPage.map((coin: any) => {
-            return <MainViewRow key={coin.name} coin={coin} />;
-          })}
-        </tbody>
-      </Table>
-      <TablePagin
-        coinList={coins}
-        currentPage={currentPage}
-        onClick={paginClick}
-      />
+        </>
+      )}
     </div>
   );
 };
