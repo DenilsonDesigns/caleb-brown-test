@@ -1,5 +1,17 @@
 ## Test For Caleb Brown FE Dev.
 
+## To Run Project:
+
+### Clone repo.
+
+### run `npm i` in project folder
+
+### run `npm start`
+
+### to run tests: `npm run test`
+
+## Libs Used:
+
 ### React: https://reactjs.org
 
 ### TypeScript: https://www.typescriptlang.org/

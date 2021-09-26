@@ -5,8 +5,6 @@ import { MAIN_VIEW_ROW_KV_PAIRS } from "../../../util/globalVars";
 const CryptoTableRow = (props: CryptoTableRowProps): JSX.Element => {
   const history = useHistory();
 
-  console.log(props.coin);
-
   return (
     <tr
       onClick={() => {

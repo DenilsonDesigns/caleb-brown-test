@@ -123,7 +123,7 @@ const MainView = (): JSX.Element => {
             </tbody>
           </Table>
           <TablePagin
-            coinList={coins}
+            coinList={filteredCoins}
             currentPage={currentPage}
             onClick={paginClick}
           />

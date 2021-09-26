@@ -19,7 +19,6 @@ const Trending = (): JSX.Element => {
         params: { vs_currency: "usd", order: "volume_desc", per_page: 10 },
       })
       .then((res: { data: MainViewCoin[] }) => {
-        console.log(res.data);
         setTrendingList(res.data);
         setLoading(false);
       })
@@ -33,7 +32,9 @@ const Trending = (): JSX.Element => {
 
   return (
     <div>
-      <h4>Trending Cryptos By Volume</h4>
+      <h4 style={{ marginBottom: "1%", marginTop: "1%" }}>
+        Trending Cryptos By Volume
+      </h4>
 
       {loading ? (
         <ClipLoader />

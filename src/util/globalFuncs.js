@@ -1,5 +1,4 @@
 export const convertVal = (val, key, fullObj) => {
-  console.log(val, key);
   switch (key) {
     case "current_price":
       return `$${convertToCurrencyNum(val)}`;
@@ -19,15 +18,15 @@ export const convertVal = (val, key, fullObj) => {
 };
 
 // source: https://stackoverflow.com/questions/149055/how-to-format-numbers-as-currency-strings
-const convertToCurrencyNum = (val) => {
+export const convertToCurrencyNum = (val) => {
   return !val ? "N/A" : val.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,");
 };
 
-const convertToVolNum = (val) => {
+export const convertToVolNum = (val) => {
   return !val ? "N/A" : Number(val.toFixed(1)).toLocaleString();
 };
 
-const calcCircSupply = (obj) => {
+export const calcCircSupply = (obj) => {
   if (!obj.max_supply || !obj.circulating_supply) return "N/A";
 
   return ((100 * obj.circulating_supply) / obj.max_supply).toFixed(2);

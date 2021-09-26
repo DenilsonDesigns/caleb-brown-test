@@ -14,7 +14,7 @@ interface CoinDetail {
 }
 
 interface MainViewKVPairs {
-  [key: string]: string | number;
+  [key: string]: string | number | null;
 }
 
 interface MainViewCoin extends MainViewKVPairs {
@@ -28,8 +28,8 @@ interface MainViewCoin extends MainViewKVPairs {
   price_change_24h: number;
   price_change_percentage_24h: number;
   circulating_supply: number;
-  total_supply: number;
-  max_supply: number;
+  total_supply: number | null;
+  max_supply: number | null;
 }
 
 interface TablePaginProps {
